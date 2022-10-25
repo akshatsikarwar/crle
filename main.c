@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <comdb2rle.h>
 
+#define data 0x08
+#define null 0x02
+
 #define HAVE_10K
 
 int main()
@@ -12,24 +15,29 @@ int main()
         int32_t c0;
 
         uint8_t h1;
-        uint16_t c1;
+        short c1;
 
         uint8_t h2; 
         uint8_t c2[5000];
 
 #       ifdef HAVE_10K
         uint8_t h3; 
-        uint8_t c3[10000];
+        uint8_t c3[5];
 #       endif // HAVE_10K
     };
     #pragma pack()
 
     struct row in = {0};
-    in.h0 = 0x02;
-    in.h1 = 0x02;
-    in.h2 = 0x02;
+    in.h0 = data;
+    in.c0 = 99;
+
+    in.h1 = data;
+    in.c1 = 999;
+
+    in.h2 = null;
+
 #   ifdef HAVE_10K
-    in.h3 = 0x02;
+    in.h3 = null;
 #   endif //HAVE_10K
 
     uint8_t out[sizeof(in) * 2];
