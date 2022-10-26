@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 project(crle)
-add_executable(comdb2rle main.c comdb2rle.c)
+add_executable(comdb2rle main.c comdb2rle.c tohex.c)
 include_directories(${PROJECT_SOURCE_DIR})
 add_definitions(-DCRLE_VERBOSE)
