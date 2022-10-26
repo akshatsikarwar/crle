@@ -109,6 +109,6 @@ int main()
         fprintf(stderr, "decompress mismatch\n");
         return 3;
     }
-    puts("\nsuccess");
+    printf("\nsuccess %d -> %d -> %d\n", c.insz, c.outsz, d.outsz);
     return 0;
 }
