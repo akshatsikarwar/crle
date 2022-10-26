@@ -29,7 +29,7 @@
 #ifdef CRLE_VERBOSE
 #include <tohex.h>
 
-static int doprint = 0;
+static int doprint = 1;
 #endif
 
 #define CNT(x) (sizeof(x) / sizeof(x[0]))
