@@ -1,7 +1,7 @@
-#include <arpa/inet.h>
 #include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <comdb2rle.h>
 #include <tohex.h>
@@ -11,7 +11,7 @@
 
 #define HAVE_10K
 #undef HAVE_REPEAT
-#undef VUTF8_DATA
+#define VUTF8_DATA
 
 int main()
 {
@@ -40,7 +40,8 @@ int main()
 
     struct row in =  {
         .h00 = data,
-        .c00 = {0x80, 0, 0, 0}, /* +0 */
+        //.c00 = {0x80, 0, 0, 0}, /* +0 */
+        .c00 = {0xde, 0xad, 0xbe, 0xef}, /* +0 */
 
 #       ifdef HAVE_REPEAT
             .h01 = data,
@@ -48,7 +49,8 @@ int main()
 #       endif /* HAVE_REPEAT */
 
         .h1 = data,
-        .c1 = {0x7f, 0xff}, /* -1 */
+        //.c1 = {0x7f, 0xff}, /* -1 */
+        .c1 = {0xca, 0xfe}, /* -1 */
 
 #       ifdef VUTF8_DATA
             .h2 = data,
@@ -68,7 +70,8 @@ int main()
     };
     //print_hex(&in, sizeof(in));
 
-    uint8_t out[sizeof(in) * 2];
+    char out[sizeof(in) / 2];
+    char out_in[sizeof(in)];
 
     uint16_t hints[] = { sizeof(in.c00) + 1,
 #                        ifdef HAVE_REPEAT
@@ -84,14 +87,24 @@ int main()
 
     Comdb2RLE c = { .in = (uint8_t *)&in, .insz = sizeof(in), .out = out, .outsz = sizeof(out) };
 
-#   if 0
-    int rc = compressComdb2RLE(&c);
-    printf("compressComdb2RLE rc:%d insz:%ld outsz:%ld\n", rc, c.insz, c.outsz);
-#   else
-    int rc = compressComdb2RLE_hints(&c, hints);
-    printf("compressComdb2RLE_hints rc:%d insz:%ld outsz:%ld\n", rc, c.insz, c.outsz);
-#   endif
-    print_hex(&out, c.outsz);
-
+    int rc;
+    puts("compressComdb2RLE_hints");
+    rc = compressComdb2RLE_hints(&c, hints);
+    if (rc != 0) {
+        fprintf(stderr, "compressComdb2RLE_hints failed\n");
+        return 1;
+    }
+    puts("\ndecompressComdb2RLE");
+    Comdb2RLE d = { .in = (uint8_t *)out, .insz = c.outsz, .out = out_in, .outsz = sizeof(out_in) };
+    rc = decompressComdb2RLE(&d);
+    if (rc != 0) {
+        fprintf(stderr, "decompress failed\n");
+        return 2;
+    }
+    if (memcmp(&in, out_in, sizeof(in)) != 0) {
+        fprintf(stderr, "decompress mismatch\n");
+        return 3;
+    }
+    puts("\nsuccess");
     return 0;
 }
