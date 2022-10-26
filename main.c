@@ -17,16 +17,16 @@ int main()
 {
     #pragma pack(1)
     struct row {
-        uint8_t h00; /* header 0 */
-        uint8_t c00[4]; /* column 0 */
+        uint8_t h00; /* header 00 */
+        int32_t c00; //uint8_t c00[4]; /* column 00 */
 
 #       ifdef HAVE_REPEAT
-        uint8_t h01; /* header 0 */
-        uint8_t c01[4]; /* column 0 */
+        uint8_t h01; /* header 01 */
+        int32_t c01; //uint8_t c01[4]; /* column 01 */
 #       endif
 
         uint8_t h1; /* header 1 */
-        uint8_t c1[2]; /* column 1 */
+        short c1; //uint8_t c1[2]; /* column 1 */
 
         uint8_t h2; 
         uint8_t c2[5000];
@@ -41,16 +41,20 @@ int main()
     struct row in =  {
         .h00 = data,
         //.c00 = {0x80, 0, 0, 0}, /* +0 */
-        .c00 = {0xde, 0xad, 0xbe, 0xef}, /* +0 */
+        //.c00 = {0xde, 0xad, 0xbe, 0xef}, /* +0 */
+        .c00 = 99,
 
 #       ifdef HAVE_REPEAT
             .h01 = data,
-            .c01 = {0x80, 0, 0, 0}, /* +0 */
+            //.c01 = {0x80, 0, 0, 0}, /* +0 */
+            //.c01 = {0xde, 0xad, 0xbe, 0xef}, /* +0 */
+            .c01 = 99,
 #       endif /* HAVE_REPEAT */
 
         .h1 = data,
         //.c1 = {0x7f, 0xff}, /* -1 */
-        .c1 = {0xca, 0xfe}, /* -1 */
+        //.c1 = {0xca, 0xfe}, /* -1 */
+        .c1 = 999,
 
 #       ifdef VUTF8_DATA
             .h2 = data,
