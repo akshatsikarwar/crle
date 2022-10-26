@@ -1,3 +1,4 @@
+#include <arpa/inet.h>
 #include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -31,11 +32,17 @@ int main()
         short c1; //uint8_t c1[2]; /* column 1 */
 
         uint8_t h2; 
-        uint8_t c2[5000];
+        struct {
+            int32_t len;
+            uint8_t dta[1000];
+        } c2;
 
 #       ifdef HAVE_10K
         uint8_t h3; 
-        uint8_t c3[10000];
+        struct {
+            int32_t len;
+            uint8_t dta[500];
+        } c3;
 #       endif // HAVE_10K
     };
     #pragma pack()
@@ -62,7 +69,7 @@ int main()
 
 #       ifdef VUTF8_DATA
             .h2 = data,
-            .c2 = "hi",
+            .c2 = { .len = htonl(strlen("hi") + 1), .dta = "hi"},
 #       else
             .h2 = null,
 #       endif /* VUTF8_DATA */
@@ -70,13 +77,13 @@ int main()
 #       ifdef HAVE_10K
 #           ifdef VUTF8_DATA
                 .h3 = data,
-                .c3 = "hj"
+                .c3 = { .len = htonl(strlen("hj") + 1), .dta = "hj"},
 #           else
                 .h3 = null,
 #           endif /* VUTF8_DATA */
 #       endif /* HAVE_10K */
     };
-    //print_hex(&in, sizeof(in));
+    //print_hex((char *)&in, 20);
 
     char out[sizeof(in) / 2];
     char out_in[sizeof(in)];
