@@ -10,7 +10,7 @@ void print_hex(char *p, int s)
     while (from < to) {
         char a = (*from & 0xf0) >> 4;
         char b = (*from & 0x0f);
-        printf("%c%c", map[a], map[b]);
+        printf("%c%c ", map[a], map[b]);
         ++from;
     }
     puts("");

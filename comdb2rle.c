@@ -213,7 +213,7 @@ static uint32_t decode(Data *input, uint8_t **p_, uint32_t *s_, uint32_t *r_)
     *r_ = r;
 #ifdef CRLE_VERBOSE
     if (doprint) {
-        fprintf(stderr, "%d x 0x", r + 1);
+        fprintf(stderr, "%d x ", r + 1);
         print_hex(p, s);
     }
 #endif
@@ -334,7 +334,7 @@ static int encode_prev(Data *output, const Data *input, uint32_t *prev)
         return 1;
 #ifdef CRLE_VERBOSE
     if (doprint) {
-        fprintf(stderr, "     %s: 0x", __func__);
+        fprintf(stderr, "     %s: ", __func__);
         print_hex(from, p);
     }
 #endif
@@ -362,7 +362,7 @@ static int encode_wellknown(Data *output, Data *input, uint32_t w, uint32_t r)
         return 1;
 #ifdef CRLE_VERBOSE
     if (doprint) {
-        fprintf(stderr, "%s: %u x 0x", __func__, r + 1);
+        fprintf(stderr, "%s: %u x ", __func__, r + 1);
         print_hex(patterns[w], psizes[w]);
     }
 #endif
@@ -387,7 +387,7 @@ static int encode_repeat(Data *output, Data *input, uint32_t r, uint32_t s)
         return 1;
 #ifdef CRLE_VERBOSE
     if (doprint) {
-        fprintf(stderr, "   %s: %u x 0x", __func__, r + 1);
+        fprintf(stderr, "   %s: %u x ", __func__, r + 1);
         print_hex(input->dt, s);
     }
 #endif
