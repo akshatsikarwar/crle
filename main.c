@@ -9,6 +9,8 @@
 
 #define data 0x08
 #define null 0x02
+#define C2 "hi"
+#define C3 "HI"
 
 int main()
 {
@@ -20,13 +22,13 @@ int main()
         uint8_t h2; 
         struct {
             int32_t len;
-            uint8_t dta[1000];
+            uint8_t dta[10000];
         } c2;
 
         uint8_t h3; 
         struct {
             int32_t len;
-            uint8_t dta[500];
+            uint8_t dta[5000];
         } c3;
     };
     #pragma pack()
@@ -36,11 +38,13 @@ int main()
         .c1 = 0,
 
         .h2 = data,
-        .c2 = { .len = htonl(strlen("hi") + 1), .dta = "hi"},
+        .c2 = { .len = htonl(sizeof(C2)), .dta = C2},
 
         .h3 = data,
-        .c3 = { .len = htonl(strlen("hj") + 1), .dta = "hj"},
+        .c3 = { .len = htonl(sizeof(C3)), .dta = C3},
     };
+
+    print_hex((char *)&in, 15);
 
     char out[sizeof(in) / 2];
     char out_in[sizeof(in)];
