@@ -677,8 +677,23 @@ int compressComdb2RLE_hints(Comdb2RLE *c, uint16_t *fld_hints)
                 // adjust to point at next field
                 uint32_t adj = next - consumed;
                 prev += adj;
-                input.dt += adj;
-                input.sz -= adj;
+
+                uint32_t tmp_r;
+                if (repeats_rev(&input, adj, &tmp_r)) {
+                    uint32_t diff = adj - (tmp_r + 1);
+                    if (diff) {
+                        input.dt += diff;
+                        input.sz -= diff;
+                        if (encode_prev(&output, &input, &diff)) {
+                            return 1;
+                        }
+                    }
+                    encode_repeat(&output, &input, tmp_r, 1);
+                    prev = 0;
+                } else {
+                    input.dt += adj;
+                    input.sz -= adj;
+                }
             }
         } else {
             prev += sz;
