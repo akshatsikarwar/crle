@@ -9,39 +9,54 @@
 
 #define data 0x08
 #define null 0x02
-#define C2 "hi"
-#define C3 "HI"
+
+#define V1 "hi"
+#define V2 "HI"
+
+#define hdr uint8_t
 
 int main()
 {
     #pragma pack(1)
     struct row {
-        uint8_t h1; /* header 1 */
-        short c1; //uint8_t c1[2]; /* column 1 */
+        hdr h1;
+        short s1;
 
-        uint8_t h2; 
+        hdr h2;
+        short s2;
+
+        hdr h3;
         struct {
             int32_t len;
             uint8_t dta[10000];
-        } c2;
+        } v1;
 
-        uint8_t h3; 
+        hdr h4;
+        short s3;
+
+        hdr h5;
         struct {
             int32_t len;
             uint8_t dta[5000];
-        } c3;
+        } v2;
     };
     #pragma pack()
 
     struct row in =  {
         .h1 = data,
-        .c1 = 0,
+        .s1 = 0,
 
         .h2 = data,
-        .c2 = { .len = htonl(sizeof(C2)), .dta = C2},
+        .s2 = 0,
 
         .h3 = data,
-        .c3 = { .len = htonl(sizeof(C3)), .dta = C3},
+        .v1 = { .len = htonl(sizeof(V1)), .dta = V1},
+
+        .h4 = data,
+        .s3 = 1,
+
+        .h5 = data,
+        .v2 = { .len = htonl(sizeof(V2)), .dta = V2},
     };
 
     print_hex((char *)&in, 15);
@@ -50,9 +65,11 @@ int main()
     char out_in[sizeof(in)];
 
     uint16_t hints[] = { 
-        sizeof(in.c1) + 1,
-        sizeof(in.c2) + 1,
-        sizeof(in.c3) + 1,
+        sizeof(in.s1) + 1,
+        sizeof(in.s2) + 1,
+        sizeof(in.v1) + 1,
+        sizeof(in.s3) + 1,
+        sizeof(in.v2) + 1,
         0
     };
 
